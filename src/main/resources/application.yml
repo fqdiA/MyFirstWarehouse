@@ -1,0 +1,65 @@
+spring:
+  redis:
+    port: 6379
+    host: localhost
+  datasource:
+    url: jdbc:mysql://localhost:3306/smart?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  mvc:
+    pathmatch:
+      #swagger配置
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      # 设置单个文件大小
+      max-file-size: 50MB
+      # 设置单次请求文件总大小
+      max-request-size: 50MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  mail:
+    username: 2659754209@qq.com
+    password: gltrqhxazhnldhja
+    host: smtp.qq.com
+    port: 465
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+server:
+  port: 8081
+
+jwt:
+  secret:
+    fqB92023 #token的盐
+  expiration:
+    604800000 #token过期时间  1000*60*60*7 一周
+
+
+mybatis:
+  type-aliases-package: com.fq.superparking.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.fq.superparking.dao: debug
+
+# 百度ai配置项自定义
+baidu:
+  app-id: 41873653
+  api-key: lHNR5hFAfFgwtSzMYqXWkLoP
+  secret-key: GHqwwhZaZvUoXZYkUG9podlq2GZlvtNI

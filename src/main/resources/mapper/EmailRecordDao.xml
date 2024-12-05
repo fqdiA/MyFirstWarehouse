@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fq.superparking.dao.EmailRecordDao">
+
+    <resultMap id="BaseResultMap" type="com.fq.superparking.entity.EmailRecord">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="sendUserId" column="send_user_id" jdbcType="BIGINT"/>
+            <result property="sendUserUsername" column="send_user_username" jdbcType="VARCHAR"/>
+            <result property="sendUserEmail" column="send_user_email" jdbcType="VARCHAR"/>
+            <result property="addresseeUserId" column="addressee_user_id" jdbcType="BIGINT"/>
+            <result property="addresseeUserEmail" column="addressee_user_email" jdbcType="VARCHAR"/>
+            <result property="sendTime" column="sendTime" jdbcType="TIMESTAMP"/>
+            <result property="emailMotif" column="emailmotif" jdbcType="VARCHAR"/>
+            <result property="emailSubject" column="emailsubject" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,send_user_id,send_user_username,
+        send_user_email,addressee_user_id,addressee_user_username,
+        addressee_user_email,sendTime,emailmotif,
+        emailsubject
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_email_record
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="queryAllPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from app_email_record
+        <where>
+            <if test="emailMotif != null and emailMotif != '' ">
+                emailmotif like concat('%',#{emailMotif},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from app_email_record
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.EmailRecord" useGeneratedKeys="true">
+        insert into app_email_record
+        ( id,send_user_id,send_user_username
+        ,send_user_email,addressee_user_id,addressee_user_username
+        ,addressee_user_email,sendTime,emailmotif
+        ,emailsubject)
+        values (#{id,jdbcType=BIGINT},#{sendUserId,jdbcType=BIGINT},#{sendUserUsername,jdbcType=VARCHAR}
+        ,#{sendUserEmail,jdbcType=VARCHAR},#{addresseeUserId,jdbcType=BIGINT},#{addresseeUserUsername,jdbcType=VARCHAR}
+        ,#{addresseeUserEmail,jdbcType=VARCHAR},#{sendtime,jdbcType=TIMESTAMP},#{emailmotif,jdbcType=VARCHAR}
+        ,#{emailsubject,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.EmailRecord" useGeneratedKeys="true">
+        insert into app_email_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="sendUserId != null">send_user_id,</if>
+                <if test="sendUserUsername != null">send_user_username,</if>
+                <if test="sendUserEmail != null">send_user_email,</if>
+                <if test="addresseeUserId != null">addressee_user_id,</if>
+                <if test="addresseeUserUsername != null">addressee_user_username,</if>
+                <if test="addresseeUserEmail != null">addressee_user_email,</if>
+                <if test="sendTime != null">sendTime,</if>
+                <if test="emailMotif != null">emailMotif,</if>
+                <if test="emailSubject != null">emailSubject,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="sendUserId != null">#{sendUserId,jdbcType=BIGINT},</if>
+                <if test="sendUserUsername != null">#{sendUserUsername,jdbcType=VARCHAR},</if>
+                <if test="sendUserEmail != null">#{sendUserEmail,jdbcType=VARCHAR},</if>
+                <if test="addresseeUserId != null">#{addresseeUserId,jdbcType=BIGINT},</if>
+                <if test="addresseeUserUsername != null">#{addresseeUserUsername,jdbcType=VARCHAR},</if>
+                <if test="addresseeUserEmail != null">#{addresseeUserEmail,jdbcType=VARCHAR},</if>
+                <if test="sendTime != null">#{sendTime,jdbcType=TIMESTAMP},</if>
+                <if test="emailMotif != null">#{emailMotif,jdbcType=VARCHAR},</if>
+                <if test="emailSubject != null">#{emailSubject,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fq.superparking.entity.EmailRecord">
+        update app_email_record
+        <set>
+                <if test="sendUserId != null">
+                    send_user_id = #{sendUserId,jdbcType=BIGINT},
+                </if>
+                <if test="sendUserUsername != null">
+                    send_user_username = #{sendUserUsername,jdbcType=VARCHAR},
+                </if>
+                <if test="sendUserEmail != null">
+                    send_user_email = #{sendUserEmail,jdbcType=VARCHAR},
+                </if>
+                <if test="addresseeUserId != null">
+                    addressee_user_id = #{addresseeUserId,jdbcType=BIGINT},
+                </if>
+                <if test="addresseeUserUsername != null">
+                    addressee_user_username = #{addresseeUserUsername,jdbcType=VARCHAR},
+                </if>
+                <if test="addresseeUserEmail != null">
+                    addressee_user_email = #{addresseeUserEmail,jdbcType=VARCHAR},
+                </if>
+                <if test="sendtime != null">
+                    sendTime = #{sendtime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="emailmotif != null">
+                    emailmotif = #{emailmotif,jdbcType=VARCHAR},
+                </if>
+                <if test="emailsubject != null">
+                    emailsubject = #{emailsubject,jdbcType=VARCHAR},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fq.superparking.entity.EmailRecord">
+        update app_email_record
+        set 
+            send_user_id =  #{sendUserId,jdbcType=BIGINT},
+            send_user_username =  #{sendUserUsername,jdbcType=VARCHAR},
+            send_user_email =  #{sendUserEmail,jdbcType=VARCHAR},
+            addressee_user_id =  #{addresseeUserId,jdbcType=BIGINT},
+            addressee_user_username =  #{addresseeUserUsername,jdbcType=VARCHAR},
+            addressee_user_email =  #{addresseeUserEmail,jdbcType=VARCHAR},
+            sendTime =  #{sendtime,jdbcType=TIMESTAMP},
+            emailmotif =  #{emailmotif,jdbcType=VARCHAR},
+            emailsubject =  #{emailsubject,jdbcType=VARCHAR}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

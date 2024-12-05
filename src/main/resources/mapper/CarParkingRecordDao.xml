@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fq.superparking.dao.CarParkingRecordDao">
+
+    <resultMap id="BaseResultMap" type="com.fq.superparking.entity.CarParkingRecord">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="cost" column="cost" jdbcType="DECIMAL"/>
+            <result property="gmtInto" column="gmt_into" jdbcType="TIMESTAMP"/>
+            <result property="gmtOut" column="gmt_out" jdbcType="TIMESTAMP"/>
+            <result property="orgId" column="org_id" jdbcType="BIGINT"/>
+            <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+            <result property="parkManageId" column="park_manage_id" jdbcType="BIGINT"/>
+            <result property="parkManageName" column="park_manage_name" jdbcType="VARCHAR"/>
+            <result property="plateNumber" column="plate_number" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="SMALLINT"/>
+            <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cost,gmt_into,
+        gmt_out,org_id,org_name,
+        park_manage_id,park_manage_name,plate_number,
+        type,order_no
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_car_parking_record
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="queryAll" resultType="CarParkingRecord">
+        select
+        <include refid="Base_Column_List"/>
+        from app_car_parking_record
+        <where>
+            <trim prefixOverrides="and|or">
+                <if test="plateNumber != null and plateNumber != '' ">
+                    and plate_number like concat('%',#{plateNumber},'%')
+                </if>
+                <if test="orgId != null">
+                    and org_id = #{orgId}
+                </if>
+                <if test="parkManageId != null">
+                    and park_manage_id = #{parkManageId}
+                </if>
+                <if test="IntoTime != null and OutTime != null">
+                    and gmt_into &gt;= #{IntoTime} and gmt_out &lt;= #{OutTime}
+                </if>
+            </trim>
+        </where>
+        order by gmt_into desc
+    </select>
+    <select id="queryByPlateNumber" resultType="com.fq.superparking.entity.CarParkingRecord">
+        select <include refid="Base_Column_List"/>
+        from app_car_parking_record
+        <where>
+            plate_number = #{plateNumber}
+        </where>
+        order by gmt_into desc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from app_car_parking_record
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.CarParkingRecord" useGeneratedKeys="true">
+        insert into app_car_parking_record
+        ( id,cost,gmt_into
+        ,gmt_out,org_id,org_name
+        ,park_manage_id,park_manage_name,plate_number
+        ,type,order_no)
+        values (#{id,jdbcType=BIGINT},#{cost,jdbcType=DECIMAL},#{gmtInto,jdbcType=TIMESTAMP}
+        ,#{gmtOut,jdbcType=TIMESTAMP},#{orgId,jdbcType=BIGINT},#{orgName,jdbcType=VARCHAR}
+        ,#{parkManageId,jdbcType=BIGINT},#{parkManageName,jdbcType=VARCHAR},#{plateNumber,jdbcType=VARCHAR}
+        ,#{type,jdbcType=SMALLINT},#{orderNo,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.CarParkingRecord" useGeneratedKeys="true">
+        insert into app_car_parking_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="cost != null">cost,</if>
+                <if test="gmtInto != null">gmt_into,</if>
+                <if test="gmtOut != null">gmt_out,</if>
+                <if test="orgId != null">org_id,</if>
+                <if test="orgName != null">org_name,</if>
+                <if test="parkManageId != null">park_manage_id,</if>
+                <if test="parkManageName != null">park_manage_name,</if>
+                <if test="plateNumber != null">plate_number,</if>
+                <if test="type != null">type,</if>
+                <if test="orderNo != null">order_no,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="cost != null">#{cost,jdbcType=DECIMAL},</if>
+                <if test="gmtInto != null">#{gmtInto,jdbcType=TIMESTAMP},</if>
+                <if test="gmtOut != null">#{gmtOut,jdbcType=TIMESTAMP},</if>
+                <if test="orgId != null">#{orgId,jdbcType=BIGINT},</if>
+                <if test="orgName != null">#{orgName,jdbcType=VARCHAR},</if>
+                <if test="parkManageId != null">#{parkManageId,jdbcType=BIGINT},</if>
+                <if test="parkManageName != null">#{parkManageName,jdbcType=VARCHAR},</if>
+                <if test="plateNumber != null">#{plateNumber,jdbcType=VARCHAR},</if>
+                <if test="type != null">#{type,jdbcType=SMALLINT},</if>
+                <if test="orderNo != null">#{orderNo,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fq.superparking.entity.CarParkingRecord">
+        update app_car_parking_record
+        <set>
+                <if test="cost != null">
+                    cost = #{cost,jdbcType=DECIMAL},
+                </if>
+                <if test="gmtInto != null">
+                    gmt_into = #{gmtInto,jdbcType=TIMESTAMP},
+                </if>
+                <if test="gmtOut != null">
+                    gmt_out = #{gmtOut,jdbcType=TIMESTAMP},
+                </if>
+                <if test="orgId != null">
+                    org_id = #{orgId,jdbcType=BIGINT},
+                </if>
+                <if test="orgName != null">
+                    org_name = #{orgName,jdbcType=VARCHAR},
+                </if>
+                <if test="parkManageId != null">
+                    park_manage_id = #{parkManageId,jdbcType=BIGINT},
+                </if>
+                <if test="parkManageName != null">
+                    park_manage_name = #{parkManageName,jdbcType=VARCHAR},
+                </if>
+                <if test="plateNumber != null">
+                    plate_number = #{plateNumber,jdbcType=VARCHAR},
+                </if>
+                <if test="type != null">
+                    type = #{type,jdbcType=SMALLINT},
+                </if>
+                <if test="orderNo != null">
+                    order_no = #{orderNo,jdbcType=VARCHAR},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fq.superparking.entity.CarParkingRecord">
+        update app_car_parking_record
+        set 
+            cost =  #{cost,jdbcType=DECIMAL},
+            gmt_into =  #{gmtInto,jdbcType=TIMESTAMP},
+            gmt_out =  #{gmtOut,jdbcType=TIMESTAMP},
+            org_id =  #{orgId,jdbcType=BIGINT},
+            org_name =  #{orgName,jdbcType=VARCHAR},
+            park_manage_id =  #{parkManageId,jdbcType=BIGINT},
+            park_manage_name =  #{parkManageName,jdbcType=VARCHAR},
+            plate_number =  #{plateNumber,jdbcType=VARCHAR},
+            type =  #{type,jdbcType=SMALLINT},
+            order_no =  #{orderNo,jdbcType=VARCHAR}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

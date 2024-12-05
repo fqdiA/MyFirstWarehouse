@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fq.superparking.dao.CarManageDao">
+
+    <resultMap id="BaseResultMap" type="com.fq.superparking.entity.CarManage">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="gender" column="gender" jdbcType="VARCHAR"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="orgId" column="org_id" jdbcType="BIGINT"/>
+            <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+            <result property="parkManageId" column="park_manage_id" jdbcType="BIGINT"/>
+            <result property="parkManageName" column="park_manage_name" jdbcType="VARCHAR"/>
+            <result property="parkingLot" column="parking_lot" jdbcType="VARCHAR"/>
+            <result property="plateNumber" column="plate_number" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="SMALLINT"/>
+            <result property="type" column="type" jdbcType="SMALLINT"/>
+            <result property="userIdCreate" column="user_id_create" jdbcType="BIGINT"/>
+            <result property="validityTime" column="validity_time" jdbcType="TIMESTAMP"/>
+            <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,gender,gmt_create,
+        gmt_modified,name,nickname,
+        org_id,org_name,park_manage_id,
+        park_manage_name,parking_lot,plate_number,
+        remark,status,type,
+        user_id_create,validity_time,mobile
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_car_manage
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="findAll" resultType="carManage">
+        select <include refid="Base_Column_List"/> from app_car_manage
+        <where>
+            <if test="name != null and name != '' ">
+                (nickname like concat ('%',#{name},'%') or
+                plate_number like concat('%',#{name},'%'))
+            </if>
+            <if test="orgId != null">
+                and org_id = #{orgId}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllByPlateNumber" resultType="com.fq.superparking.entity.CarManage">
+        select type from app_car_manage where plate_number = #{plateNumber}
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(1) from app_car_manage
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from app_car_manage
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.CarManage" useGeneratedKeys="true">
+        insert into app_car_manage
+        ( id,gender,gmt_create
+        ,gmt_modified,name,nickname
+        ,org_id,org_name,park_manage_id
+        ,park_manage_name,parking_lot,plate_number
+        ,remark,status,type
+        ,user_id_create,validity_time,mobile
+        )
+        values (#{id,jdbcType=BIGINT},#{gender,jdbcType=VARCHAR},#{gmtCreate,jdbcType=TIMESTAMP}
+        ,#{gmtModified,jdbcType=TIMESTAMP},#{name,jdbcType=VARCHAR},#{nickname,jdbcType=VARCHAR}
+        ,#{orgId,jdbcType=BIGINT},#{orgName,jdbcType=VARCHAR},#{parkManageId,jdbcType=BIGINT}
+        ,#{parkManageName,jdbcType=VARCHAR},#{parkingLot,jdbcType=VARCHAR},#{plateNumber,jdbcType=VARCHAR}
+        ,#{remark,jdbcType=VARCHAR},#{status,jdbcType=SMALLINT},#{type,jdbcType=SMALLINT}
+        ,#{userIdCreate,jdbcType=BIGINT},#{validityTime,jdbcType=TIMESTAMP},#{mobile,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.CarManage" useGeneratedKeys="true">
+        insert into app_car_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="gender != null">gender,</if>
+                <if test="gmtCreate != null">gmt_create,</if>
+                <if test="gmtModified != null">gmt_modified,</if>
+                <if test="name != null">name,</if>
+                <if test="nickname != null">nickname,</if>
+                <if test="orgId != null">org_id,</if>
+                <if test="orgName != null">org_name,</if>
+                <if test="parkManageId != null">park_manage_id,</if>
+                <if test="parkManageName != null">park_manage_name,</if>
+                <if test="parkingLot != null">parking_lot,</if>
+                <if test="plateNumber != null">plate_number,</if>
+                <if test="remark != null">remark,</if>
+                <if test="status != null">status,</if>
+                <if test="type != null">type,</if>
+                <if test="userIdCreate != null">user_id_create,</if>
+                <if test="validityTime != null">validity_time,</if>
+                <if test="mobile != null">mobile,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="gender != null">#{gender,jdbcType=VARCHAR},</if>
+                <if test="gmtCreate != null">#{gmtCreate,jdbcType=TIMESTAMP},</if>
+                <if test="gmtModified != null">#{gmtModified,jdbcType=TIMESTAMP},</if>
+                <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+                <if test="nickname != null">#{nickname,jdbcType=VARCHAR},</if>
+                <if test="orgId != null">#{orgId,jdbcType=BIGINT},</if>
+                <if test="orgName != null">#{orgName,jdbcType=VARCHAR},</if>
+                <if test="parkManageId != null">#{parkManageId,jdbcType=BIGINT},</if>
+                <if test="parkManageName != null">#{parkManageName,jdbcType=VARCHAR},</if>
+                <if test="parkingLot != null">#{parkingLot,jdbcType=VARCHAR},</if>
+                <if test="plateNumber != null">#{plateNumber,jdbcType=VARCHAR},</if>
+                <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+                <if test="status != null">#{status,jdbcType=SMALLINT},</if>
+                <if test="type != null">#{type,jdbcType=SMALLINT},</if>
+                <if test="userIdCreate != null">#{userIdCreate,jdbcType=BIGINT},</if>
+                <if test="validityTime != null">#{validityTime,jdbcType=TIMESTAMP},</if>
+                <if test="mobile != null">#{mobile,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fq.superparking.entity.CarManage">
+        update app_car_manage
+        <set>
+                <if test="gender != null">
+                    gender = #{gender,jdbcType=VARCHAR},
+                </if>
+                <if test="gmtCreate != null">
+                    gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="gmtModified != null">
+                    gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+                </if>
+                <if test="name != null">
+                    name = #{name,jdbcType=VARCHAR},
+                </if>
+                <if test="nickname != null">
+                    nickname = #{nickname,jdbcType=VARCHAR},
+                </if>
+                <if test="orgId != null">
+                    org_id = #{orgId,jdbcType=BIGINT},
+                </if>
+                <if test="orgName != null">
+                    org_name = #{orgName,jdbcType=VARCHAR},
+                </if>
+                <if test="parkManageId != null">
+                    park_manage_id = #{parkManageId,jdbcType=BIGINT},
+                </if>
+                <if test="parkManageName != null">
+                    park_manage_name = #{parkManageName,jdbcType=VARCHAR},
+                </if>
+                <if test="parkingLot != null">
+                    parking_lot = #{parkingLot,jdbcType=VARCHAR},
+                </if>
+                <if test="plateNumber != null">
+                    plate_number = #{plateNumber,jdbcType=VARCHAR},
+                </if>
+                <if test="remark != null">
+                    remark = #{remark,jdbcType=VARCHAR},
+                </if>
+                <if test="status != null">
+                    status = #{status,jdbcType=SMALLINT},
+                </if>
+                <if test="type != null">
+                    type = #{type,jdbcType=SMALLINT},
+                </if>
+                <if test="userIdCreate != null">
+                    user_id_create = #{userIdCreate,jdbcType=BIGINT},
+                </if>
+                <if test="validityTime != null">
+                    validity_time = #{validityTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="mobile != null">
+                    mobile = #{mobile,jdbcType=VARCHAR},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fq.superparking.entity.CarManage">
+        update app_car_manage
+        set 
+            gender =  #{gender,jdbcType=VARCHAR},
+            gmt_create =  #{gmtCreate,jdbcType=TIMESTAMP},
+            gmt_modified =  #{gmtModified,jdbcType=TIMESTAMP},
+            name =  #{name,jdbcType=VARCHAR},
+            nickname =  #{nickname,jdbcType=VARCHAR},
+            org_id =  #{orgId,jdbcType=BIGINT},
+            org_name =  #{orgName,jdbcType=VARCHAR},
+            park_manage_id =  #{parkManageId,jdbcType=BIGINT},
+            park_manage_name =  #{parkManageName,jdbcType=VARCHAR},
+            parking_lot =  #{parkingLot,jdbcType=VARCHAR},
+            plate_number =  #{plateNumber,jdbcType=VARCHAR},
+            remark =  #{remark,jdbcType=VARCHAR},
+            status =  #{status,jdbcType=SMALLINT},
+            type =  #{type,jdbcType=SMALLINT},
+            user_id_create =  #{userIdCreate,jdbcType=BIGINT},
+            validity_time =  #{validityTime,jdbcType=TIMESTAMP},
+            mobile =  #{mobile,jdbcType=VARCHAR}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

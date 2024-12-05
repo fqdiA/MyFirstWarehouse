@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fq.superparking.dao.ParkManageDao">
+
+    <resultMap id="BaseResultMap" type="com.fq.superparking.entity.ParkManage">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="freeTime" column="free_time" jdbcType="INTEGER"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+            <result property="maxMoney" column="max_money" jdbcType="DECIMAL"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="orgId" column="org_id" jdbcType="BIGINT"/>
+            <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+            <result property="parkingSpaceNumber" column="parking_space_number" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="SMALLINT"/>
+            <result property="timeUnit" column="time_unit" jdbcType="INTEGER"/>
+            <result property="unitCost" column="unit_cost" jdbcType="DECIMAL"/>
+            <result property="userIdCreate" column="user_id_create" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,free_time,gmt_create,
+        gmt_modified,max_money,name,
+        org_id,org_name,parking_space_number,
+        status,time_unit,unit_cost,
+        user_id_create
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_car_park_manage
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="queryAll" resultType="com.fq.superparking.entity.ParkManage" resultMap="BaseResultMap">
+        select * from app_car_park_manage
+        <where>
+            <if test="name != null">
+                and name like concat ('%',#{name},'%')
+            </if>
+            <if test="orgId != null">
+                and org_id like concat ('%',#{orgId},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(1) from app_car_park_manage
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from app_car_park_manage
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <delete id="deleteS">
+        delete from app_car_park_manage where id in (${deletes})
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.ParkManage" useGeneratedKeys="true">
+        insert into app_car_park_manage
+        ( id,free_time,gmt_create
+        ,gmt_modified,max_money,name
+        ,org_id,org_name,parking_space_number
+        ,status,time_unit,unit_cost
+        ,user_id_create)
+        values (#{id,jdbcType=BIGINT},#{freeTime,jdbcType=INTEGER},#{gmtCreate,jdbcType=TIMESTAMP}
+        ,#{gmtModified,jdbcType=TIMESTAMP},#{maxMoney,jdbcType=DECIMAL},#{name,jdbcType=VARCHAR}
+        ,#{orgId,jdbcType=BIGINT},#{orgName,jdbcType=VARCHAR},#{parkingSpaceNumber,jdbcType=INTEGER}
+        ,#{status,jdbcType=SMALLINT},#{timeUnit,jdbcType=INTEGER},#{unitCost,jdbcType=DECIMAL}
+        ,#{userIdCreate,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="parkManage" useGeneratedKeys="true">
+        insert into app_car_park_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="freeTime != null">free_time,</if>
+                <if test="gmtCreate != null">gmt_create,</if>
+                <if test="gmtModified != null">gmt_modified,</if>
+                <if test="maxMoney != null">max_money,</if>
+                <if test="name != null">`name`,</if>
+                <if test="orgId != null">org_id,</if>
+                <if test="orgName != null">org_name,</if>
+                <if test="parkingSpaceNumber != null">parking_space_number,</if>
+                <if test="status != null">status,</if>
+                <if test="timeUnit != null">time_unit,</if>
+                <if test="unitCost != null">unit_cost,</if>
+                <if test="userIdCreate != null">user_id_create,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="freeTime != null">#{freeTime,jdbcType=INTEGER},</if>
+                <if test="gmtCreate != null">#{gmtCreate,jdbcType=TIMESTAMP},</if>
+                <if test="gmtModified != null">#{gmtModified,jdbcType=TIMESTAMP},</if>
+                <if test="maxMoney != null">#{maxMoney,jdbcType=DECIMAL},</if>
+                <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+                <if test="orgId != null">#{orgId,jdbcType=BIGINT},</if>
+                <if test="orgName != null">#{orgName,jdbcType=VARCHAR},</if>
+                <if test="parkingSpaceNumber != null">#{parkingSpaceNumber,jdbcType=INTEGER},</if>
+                <if test="status != null">#{status,jdbcType=SMALLINT},</if>
+                <if test="timeUnit != null">#{timeUnit,jdbcType=INTEGER},</if>
+                <if test="unitCost != null">#{unitCost,jdbcType=DECIMAL},</if>
+                <if test="userIdCreate != null">#{userIdCreate,jdbcType=BIGINT},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fq.superparking.entity.ParkManage">
+        update app_car_park_manage
+        <set>
+                <if test="freeTime != null">
+                    free_time = #{freeTime,jdbcType=INTEGER},
+                </if>
+                <if test="gmtCreate != null">
+                    gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="gmtModified != null">
+                    gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+                </if>
+                <if test="maxMoney != null">
+                    max_money = #{maxMoney,jdbcType=DECIMAL},
+                </if>
+                <if test="name != null">
+                    `name` = #{name,jdbcType=VARCHAR},
+                </if>
+                <if test="orgId != null">
+                    org_id = #{orgId,jdbcType=BIGINT},
+                </if>
+                <if test="orgName != null">
+                    org_name = #{orgName,jdbcType=VARCHAR},
+                </if>
+                <if test="parkingSpaceNumber != null">
+                    parking_space_number = #{parkingSpaceNumber,jdbcType=INTEGER},
+                </if>
+                <if test="status != null">
+                    status = #{status,jdbcType=SMALLINT},
+                </if>
+                <if test="timeUnit != null">
+                    time_unit = #{timeUnit,jdbcType=INTEGER},
+                </if>
+                <if test="unitCost != null">
+                    unit_cost = #{unitCost,jdbcType=DECIMAL},
+                </if>
+                <if test="userIdCreate != null">
+                    user_id_create = #{userIdCreate,jdbcType=BIGINT},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fq.superparking.entity.ParkManage">
+        update app_car_park_manage
+        set 
+            free_time =  #{freeTime,jdbcType=INTEGER},
+            gmt_create =  #{gmtCreate,jdbcType=TIMESTAMP},
+            gmt_modified =  #{gmtModified,jdbcType=TIMESTAMP},
+            max_money =  #{maxMoney,jdbcType=DECIMAL},
+            name =  #{name,jdbcType=VARCHAR},
+            org_id =  #{orgId,jdbcType=BIGINT},
+            org_name =  #{orgName,jdbcType=VARCHAR},
+            parking_space_number =  #{parkingSpaceNumber,jdbcType=INTEGER},
+            status =  #{status,jdbcType=SMALLINT},
+            time_unit =  #{timeUnit,jdbcType=INTEGER},
+            unit_cost =  #{unitCost,jdbcType=DECIMAL},
+            user_id_create =  #{userIdCreate,jdbcType=BIGINT}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

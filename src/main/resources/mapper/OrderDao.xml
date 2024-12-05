@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fq.superparking.dao.OrderDao">
+
+    <resultMap id="BaseResultMap" type="com.fq.superparking.entity.Order">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="body" column="body" jdbcType="VARCHAR"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+            <result property="orgId" column="org_Id" jdbcType="BIGINT"/>
+            <result property="parkManageId" column="park_manage_id" jdbcType="BIGINT"/>
+            <result property="plateNumber" column="plate_number" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="SMALLINT"/>
+            <result property="totalFee" column="total_Fee" jdbcType="DECIMAL"/>
+            <result property="type" column="type" jdbcType="SMALLINT"/>
+            <result property="userCreate" column="user_create" jdbcType="BIGINT"/>
+            <result property="validityTime" column="validity_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,body,gmt_create,
+        order_no,org_Id,park_manage_id,
+        plate_number,remark,status,
+        total_Fee,type,user_create,
+        validity_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_order
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="queryAllListByPage" resultType="com.fq.superparking.entity.Order">
+        select id, order_no, total_Fee, plate_number, type, gmt_create, remark
+        from app_order
+        <trim prefixOverrides="and|or" >
+            <where>
+                <if test="orgId != null">
+                    and org_Id = #{orgId}
+                </if>
+                <if test="manageId != null">
+                    and park_manage_id = #{manageId}
+                </if>
+                <if test=" plateNumber != null and plateNumber != ''">
+                    and plate_number like concat ('%',#{plateNumber},'%')
+                </if>
+            </where>
+        </trim>
+    </select>
+    <select id="getCount" resultType="integer">
+        select count(1) from app_order
+    </select>
+    <select id="queryRecentlySevenSkyData" resultType="com.fq.superparking.entity.Order">
+        SELECT *
+        FROM app_order
+        WHERE gmt_create >= DATE_SUB(NOW(), INTERVAL 6 DAY)
+    </select>
+    <select id="queryWeChatCount" resultType="java.lang.Integer">
+        select count(*) from app_order where type = 0
+    </select>
+    <select id="queryAlipayCount" resultType="java.lang.Integer">
+        select count(*) from app_order where type = 1
+    </select>
+    <select id="getCountMoney" resultType="java.lang.Double">
+        select SUM(total_Fee) from app_order
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long"  >
+        delete from app_order
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.Order" useGeneratedKeys="true">
+        insert into app_order
+        ( id,body,gmt_create
+        ,order_no,org_Id,park_manage_id
+        ,plate_number,remark,status
+        ,total_Fee,type,user_create
+        ,validity_time)
+        values (#{id,jdbcType=BIGINT},#{body,jdbcType=VARCHAR},#{gmtCreate,jdbcType=TIMESTAMP}
+        ,#{orderNo,jdbcType=VARCHAR},#{orgId,jdbcType=BIGINT},#{parkManageId,jdbcType=BIGINT}
+        ,#{plateNumber,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{status,jdbcType=SMALLINT}
+        ,#{totalFee,jdbcType=DECIMAL},#{type,jdbcType=SMALLINT},#{userCreate,jdbcType=BIGINT}
+        ,#{validityTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.fq.superparking.entity.Order" useGeneratedKeys="true">
+        insert into app_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="body != null">body,</if>
+                <if test="gmtCreate != null">gmt_create,</if>
+                <if test="orderNo != null">order_no,</if>
+                <if test="orgId != null">org_Id,</if>
+                <if test="parkManageId != null">park_manage_id,</if>
+                <if test="plateNumber != null">plate_number,</if>
+                <if test="remark != null">remark,</if>
+                <if test="status != null">status,</if>
+                <if test="totalFee != null">total_Fee,</if>
+                <if test="type != null">type,</if>
+                <if test="userCreate != null">user_create,</if>
+                <if test="validityTime != null">validity_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="body != null">#{body,jdbcType=VARCHAR},</if>
+                <if test="gmtCreate != null">#{gmtCreate,jdbcType=TIMESTAMP},</if>
+                <if test="orderNo != null">#{orderNo,jdbcType=VARCHAR},</if>
+                <if test="orgId != null">#{orgId,jdbcType=BIGINT},</if>
+                <if test="parkManageId != null">#{parkManageId,jdbcType=BIGINT},</if>
+                <if test="plateNumber != null">#{plateNumber,jdbcType=VARCHAR},</if>
+                <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+                <if test="status != null">#{status,jdbcType=SMALLINT},</if>
+                <if test="totalFee != null">#{totalFee,jdbcType=DECIMAL},</if>
+                <if test="type != null">#{type,jdbcType=SMALLINT},</if>
+                <if test="userCreate != null">#{userCreate,jdbcType=BIGINT},</if>
+                <if test="validityTime != null">#{validityTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fq.superparking.entity.Order">
+        update app_order
+        <set>
+                <if test="body != null">
+                    body = #{body,jdbcType=VARCHAR},
+                </if>
+                <if test="gmtCreate != null">
+                    gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="orderNo != null">
+                    order_no = #{orderNo,jdbcType=VARCHAR},
+                </if>
+                <if test="orgId != null">
+                    org_Id = #{orgId,jdbcType=BIGINT},
+                </if>
+                <if test="parkManageId != null">
+                    park_manage_id = #{parkManageId,jdbcType=BIGINT},
+                </if>
+                <if test="plateNumber != null">
+                    plate_number = #{plateNumber,jdbcType=VARCHAR},
+                </if>
+                <if test="remark != null">
+                    remark = #{remark,jdbcType=VARCHAR},
+                </if>
+                <if test="status != null">
+                    status = #{status,jdbcType=SMALLINT},
+                </if>
+                <if test="totalFee != null">
+                    total_Fee = #{totalFee,jdbcType=DECIMAL},
+                </if>
+                <if test="type != null">
+                    type = #{type,jdbcType=SMALLINT},
+                </if>
+                <if test="userCreate != null">
+                    user_create = #{userCreate,jdbcType=BIGINT},
+                </if>
+                <if test="validityTime != null">
+                    validity_time = #{validityTime,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fq.superparking.entity.Order">
+        update app_order
+        set 
+            body =  #{body,jdbcType=VARCHAR},
+            gmt_create =  #{gmtCreate,jdbcType=TIMESTAMP},
+            order_no =  #{orderNo,jdbcType=VARCHAR},
+            org_Id =  #{orgId,jdbcType=BIGINT},
+            park_manage_id =  #{parkManageId,jdbcType=BIGINT},
+            plate_number =  #{plateNumber,jdbcType=VARCHAR},
+            remark =  #{remark,jdbcType=VARCHAR},
+            status =  #{status,jdbcType=SMALLINT},
+            total_Fee =  #{totalFee,jdbcType=DECIMAL},
+            type =  #{type,jdbcType=SMALLINT},
+            user_create =  #{userCreate,jdbcType=BIGINT},
+            validity_time =  #{validityTime,jdbcType=TIMESTAMP}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>
